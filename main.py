@@ -1,11 +1,14 @@
 import os
+from datetime import datetime
 from db import DataBase
 from kb import menu_kb, categories_kb
+from scheduled_tasks import send_message_cron
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.dispatcher import FSMContext
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 
 load_dotenv()
@@ -29,9 +32,20 @@ async def on_startup(_):
     print("Bot has been connected!")
 
 
+def setup_scheduler(bot):
+    scheduler = AsyncIOScheduler(timezone="Europe/Kiev")
+    scheduler.add_job(send_message_cron, trigger="cron", hour=13, minute=38,
+                      start_date=datetime.now(), kwargs={"bot": bot, "products": database.get_products()})
+    scheduler.start()
+    return scheduler
+
+
+scheduler = setup_scheduler(bot)
+
+
 @db.message_handler(commands=["start"])
 async def cmd_start(message: types.Message):
-    await message.answer("Список категорий", reply_markup=categories_kb(database.get_categories()))
+    await message.answer(database.get_products())
 
 
 @db.message_handler(commands=["menu"])

@@ -46,3 +46,10 @@ class DataBase:
 
         categories = self.cursor.fetchall()
         return categories
+
+
+    def get_products(self):
+        self.cursor.execute("SELECT product_number, name, shelf_life FROM products")
+
+        products = self.cursor.fetchall()
+        return products
