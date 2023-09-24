@@ -6,7 +6,7 @@ def menu_kb():
     menu_list = InlineKeyboardMarkup(row_width=2)
     menu_list.add(InlineKeyboardButton(text="Добавить продкут", callback_data="add_product"),
                   InlineKeyboardButton(text="Удалить продкут", callback_data="delete_product"),
-                  InlineKeyboardButton(text="Список продкутов", callback_data="poducts_list"))
+                  InlineKeyboardButton(text="Список продкутов", callback_data="products_list"))
     return menu_list
 
 

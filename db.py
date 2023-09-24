@@ -33,6 +33,13 @@ class DataBase:
         self.connection.commit()
 
 
+    def delete_product(self, product_number, shelf_life):
+        self.cursor.execute("""
+            DELETE FROM products WHERE product_number = ? AND shelf_life = ?
+        """, (product_number, shelf_life))
+        self.connection.commit()
+
+
     def check_table(self):
         self.cursor.execute("SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='products')")
         exists = self.cursor.fetchone()[0]
