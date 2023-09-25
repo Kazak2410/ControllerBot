@@ -39,13 +39,13 @@ async def on_startup(_):
 
 def setup_scheduler(bot):
     scheduler = AsyncIOScheduler(timezone="Europe/Kiev")
-    scheduler.add_job(send_message_cron, trigger="cron", hour=19, minute=36,
+    scheduler.add_job(send_message_cron, trigger="cron", hour=6, minute=0,
                       start_date=datetime.now(), kwargs={"bot": bot, "products": database.get_products()})
     scheduler.start()
     return scheduler
 
-
-scheduler = setup_scheduler(bot)
+if database.check_table():
+    scheduler = setup_scheduler(bot)
 
 
 @db.message_handler(commands=["menu"])
@@ -143,8 +143,15 @@ async def load_shelf_life(message: types.Message, state: FSMContext):
 
 @db.callback_query_handler(lambda callback_query: callback_query.data == "products_list")
 async def get_products(callback: types.CallbackQuery):
-    await callback.message.answer(database.get_products())
+    sorted_products = sorted(database.get_products(), key=lambda x: datetime.strptime(x[2], "%d.%m.%y"))
+    sorted_products = "Список продуктов:\n" + "\n".join(
+        f"{product_index + 1}.{str(sorted_products[product_index])}" for product_index in range(len(sorted_products))
+        )
+    await callback.message.answer(sorted_products)
 
 
 if __name__ == "__main__":
     executor.start_polling(db, on_startup=on_startup, skip_updates=True)
+
+
+"""Закончил на том что хотел добавить вывод списка продуктов от тех которые ближе к концу срока годности до тех кто дальше"""

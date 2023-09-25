@@ -25,6 +25,23 @@ class DataBase:
             )
         """)
 
+        default_categories = [
+            ("Сыр",),
+            ("Молочный продукт",),
+            ("Сырокоп",),
+            ("Полукоп",),
+            ("Сыровял",),
+            ("Варенка",),
+            ("Деликатес",),
+            ("Заморозка",),
+            ("Напиток",),
+            ("Соус",),
+            ("Прочее",)
+        ]
+
+        self.cursor.executemany("INSERT INTO categories (name) VALUES (?)", default_categories)
+        self.connection.commit()
+
 
     def add_product(self, product_number, name, category, shelf_life):
         self.cursor.execute("""

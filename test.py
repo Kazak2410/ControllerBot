@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 
 
-current_datetime = datetime.now()
+data = [(1234, 'Колбаса', '27.09.23'), (21163, 'Cыр Радомер', '26.09.23')]
 
 
-# print(datetime.strptime("23.09.23", "%d.%m.%y") - current_datetime)
-print(abs((current_datetime - datetime.strptime("28.09.23", "%d.%m.%y")).days))
-# print(type(current_datetime.strftime("%d.%m.%y")))
+sorted_data = sorted(data, key=lambda x: datetime.strptime(x[2], "%d.%m.%y"))
+
+print(sorted_data)
