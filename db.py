@@ -8,6 +8,7 @@ class DataBase:
 
 
     def create_tables(self):
+        """Creates main tables"""
         self.cursor.execute("""
             CREATE TABLE products (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,6 +45,7 @@ class DataBase:
 
 
     def add_product(self, product_number, name, category, shelf_life):
+        """Adds product to the db"""
         self.cursor.execute("""
             INSERT OR IGNORE INTO products (product_number, name, category, shelf_life) VALUES (?, ?, ?, ?)
         """, (product_number, name, category, shelf_life))
@@ -51,6 +53,7 @@ class DataBase:
 
 
     def delete_product(self, product_number, shelf_life):
+        """Deletes product from db"""
         self.cursor.execute("""
             DELETE FROM products WHERE product_number = ? AND shelf_life = ?
         """, (product_number, shelf_life))
@@ -58,12 +61,14 @@ class DataBase:
 
 
     def check_table(self):
+        """Tables verification"""
         self.cursor.execute("SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='products')")
         exists = self.cursor.fetchone()[0]
         return exists
 
 
     def get_categories(self):
+        """Returns categories from db"""
         self.cursor.execute("""
             SELECT name FROM categories
         """)
@@ -73,6 +78,7 @@ class DataBase:
 
 
     def get_products(self):
+        """Returns product list from db"""
         self.cursor.execute("SELECT product_number, name, shelf_life FROM products")
 
         products = self.cursor.fetchall()

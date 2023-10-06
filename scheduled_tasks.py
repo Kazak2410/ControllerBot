@@ -3,6 +3,7 @@ from aiogram import Bot
 
 
 async def send_message_cron(bot: Bot, products):
+    """Sends product list that need to sell"""
     products_for_sale = []
     for product in products:
         shelf_life = abs(((datetime.now()) - datetime.strptime(product[2], "%d.%m.%y")).days)
