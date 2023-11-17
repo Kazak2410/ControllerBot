@@ -146,6 +146,22 @@ async def load_category(message: types.Message, state: FSMContext):
     await ProductAddingStatesGroup.next()
 
 
+def is_valid_shelf_life(date):
+    """Checks product's shelf life is valid"""
+    try:
+        shelf_life = (datetime.now() - datetime.strptime(date.text, "%d.%m.%y")).days
+        if shelf_life > 0:
+            return True
+    except(TypeError, ValueError):
+        return True
+    return False
+
+
+@db.message_handler(is_valid_shelf_life, state=ProductAddingStatesGroup.shelf_life)
+async def check_shelf_life(message: types.Message):
+    await message.answer("Дата введена не корректно!")
+
+
 @db.message_handler(state=ProductAddingStatesGroup.shelf_life)
 async def load_shelf_life(message: types.Message, state: FSMContext):
     """Adds product to the data base"""
